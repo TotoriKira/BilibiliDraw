@@ -3,7 +3,7 @@
 #     File Name           :     draw.py
 #     Created By          :     totorikira
 #     Creation Date       :     [2017-07-31 17:37]
-#     Last Modified       :     [2017-08-04 01:03]
+#     Last Modified       :     [2017-08-04 01:12]
 #     Description         :     TotoriKira 的画画小工具
 ################################################################################
 
@@ -46,6 +46,20 @@ len_col = len(im_array[0])
 print(len_row, len_col)
 
 
+# 基础绘画基准
+base_row, base_col = 381, 0
+
+# 画笔 请手工修改颜色对应信息，注意逗号之后的空格
+# 数据按json格式输入，注意最后一行没有逗号
+brush = \
+'''
+    {
+        "(0, 0, 0)":"E",
+        "(255, 255, 255)":"G"
+    }
+'''
+brush = (json.loads(brush))
+
 def getCMD():
     '''
         得到并利用正则表达式修改cURL
@@ -81,7 +95,7 @@ def getdiff(row, col):
     # 检查目标区域颜色与本区域的不同
     for i in range(row, row + len_row):
         for j in range(col, col + len_col):
-            if im_array[i - row][j - col] != data[i * 1280 + j]:
+            if brush[str(tuple(im_array[i - row][j - col]))] != data[i * 1280 + j]:
                 ret.append((i, j, im_array[i - row][j - col]))
 
     return ret
@@ -92,19 +106,6 @@ def main():
         主函数
     '''
 
-    # 基础绘画基准
-    base_row, base_col = 381, 0
-
-    # 画笔 请手工修改颜色对应信息，注意逗号之后的空格
-    # 数据按json格式输入，注意最后一行没有逗号
-    brush = \
-        '''
-        {
-            "(0, 0, 0)":"E",
-            "(255, 255, 255)":"G"
-        }
-    '''
-    brush = (json.loads(brush))
 
     # Start output process
     request = getCMD()
