@@ -3,7 +3,7 @@
 #     File Name           :     draw.py
 #     Created By          :     totorikira
 #     Creation Date       :     [2017-07-31 17:37]
-#     Last Modified       :     [2017-08-05 01:25]
+#     Last Modified       :     [2017-08-05 10:35]
 #     Description         :     TotoriKira 的画画小工具
 ################################################################################
 
@@ -37,11 +37,11 @@ color = {
     'F': (255, 152, 0),
     'G': (151, 253, 220),
     'H': (248, 203, 140),
-    'I': (46, 143, 175),
+    'I': (46, 143, 175)
 }
 
 # Get gif map info
-im_array = ndimage.imread("ubuntu.png", mode="RGB")
+im_array = ndimage.imread("rwby.bmp", mode="RGB")
 len_row = len(im_array)
 len_col = len(im_array[0])
 
@@ -49,7 +49,7 @@ print(len_row, len_col)
 
 
 # 基础绘画基准
-base_row, base_col = 361, 292
+base_row, base_col = 381, 1
 
 # 画笔 请手工修改颜色对应信息，注意逗号之后的空格
 # 数据按json格式输入，注意最后一行没有逗号
@@ -60,7 +60,9 @@ brush = \
     "(250, 172, 142)":"9",
     "(0, 0, 0)":"0",
     "(254, 211, 199)":"7",
-    "(255, 255, 255)":"1"
+    "(255, 255, 255)":"1",
+    "(252, 222, 107)":"2",
+    "(255, 0, 0)":"E"
 }
 '''
 brush = (json.loads(brush))
@@ -105,10 +107,10 @@ def getdiff(row, col):
             continue
 
     # 检查目标区域颜色与本区域的不同
-    for j in reversed(range(col, col + len_col)):
-        for i in reversed(range(row, row + len_row)):
-            if brush[str(tuple(im_array[i - row][j - col]))] == '0':
-                continue
+    for i in range(row, row + len_row):
+        for j in range(col, col + len_col):
+            #  if brush[str(tuple(im_array[i - row][j - col]))] == '0':
+            #      continue
 
             if brush[str(tuple(im_array[i - row][j - col]))] != data[i * 1280 + j]:
                 ret.append((i, j, im_array[i - row][j - col]))
@@ -181,7 +183,6 @@ def main():
 
         print("发现被污染的像素点，正在处理中")
 
-
         for i in ret:
             pos.put(i)
 
@@ -195,8 +196,8 @@ def main():
                 tmp.start()
                 threads.append(tmp)
 
-        while not pos.empty():
-            time.sleep(60)
+        print("进入长时间等待状态，剩余时间：%d" % min(len(ret)*180, 180*10))
+        time.sleep(min(len(ret)*180//len(threads), 180*10))
 
     return
 
